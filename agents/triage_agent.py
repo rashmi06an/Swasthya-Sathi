@@ -174,3 +174,59 @@ class TriageAgent:
         }
         table = hindi if language == "hi" else english
         return table[severity]
+                remedies.append("Apply cool water sponges to the forehead and body." if language == "en" else "माथे और शरीर पर ठंडे पानी की पट्टियां लगाएं।")
+            elif "cough" in sym_lower or "खांसी" in sym_lower or "throat" in sym_lower or "गला" in sym_lower:
+                remedies.append("Gargle with warm salt water." if language == "en" else "गुनगुने नमक के पानी से गरारे करें।")
+                remedies.append("Try honey with ginger juice." if language == "en" else "अदरक के रस के साथ शहद का सेवन करें।")
+
+        allergy_warning = [
+            "⚠️ Keep your known allergies in mind before trying any home remedies or balms." if language == "en" else "⚠️ कोई भी घरेलू उपचार या बाम आज़माने से पहले अपनी ज्ञात एलर्जी का ध्यान रखें।"
+        ] if remedies else []
+
+        english = {
+            "LOW": [
+                "Monitor symptoms, stay hydrated, and rest.",
+                *remedies,
+                *allergy_warning,
+                "If symptoms worsen or last beyond 24-48 hours, see a clinician.",
+            ],
+            "MEDIUM": [
+                "Arrange a doctor or clinic visit within 24 hours.",
+                *remedies,
+                *allergy_warning,
+                "Watch for worsening fever, breathing issues, dehydration, or confusion.",
+            ],
+            "HIGH": [
+                "Seek urgent medical evaluation as soon as possible today.",
+                "Avoid self-medicating beyond basic supportive care unless a clinician advised it.",
+            ],
+            "EMERGENCY": [
+                "🚨 CALL 108 NOW! THIS IS AN EMERGENCY.",
+                "This needs emergency care right now.",
+                "Go to the nearest emergency facility immediately.",
+            ],
+        }
+        hindi = {
+            "LOW": [
+                "लक्षणों पर नजर रखें, आराम करें और पानी पीते रहें।",
+                *remedies,
+                *allergy_warning,
+                "अगर 24-48 घंटे में सुधार न हो या हालत बिगड़े तो डॉक्टर से मिलें।",
+            ],
+            "MEDIUM": [
+                "24 घंटे के भीतर डॉक्टर या क्लिनिक में जांच कराएं।",
+                *remedies,
+                *allergy_warning,
+                "अगर बुखार, सांस की दिक्कत, कमजोरी या उलझन बढ़े तो तुरंत मदद लें।",
+            ],
+            "HIGH": [
+                "आज ही जल्दी से जल्दी डॉक्टर द्वारा जांच कराएं।",
+                "डॉक्टर की सलाह के बिना अतिरिक्त दवा न लें।",
+            ],
+            "EMERGENCY": [
+                "यह आपातकालीन स्थिति हो सकती है।",
+                "तुरंत नजदीकी आपातकालीन केंद्र जाएं या स्थानीय आपात सहायता लें।",
+            ],
+        }
+        table = hindi if language == "hi" else english
+        return table[severity]

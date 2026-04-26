@@ -84,17 +84,17 @@ def severity_badge(severity: str, color_key: str) -> str:
 
 def render_facility_card(f: dict) -> str:
     emergency_tag = (
-        "<span style='background:#fee2e2;color:#7f1d1d;padding:2px 8px;"
+        "<span style='background:#fee2e2;color:#000000;padding:2px 8px;"
         "border-radius:999px;font-size:0.75rem;font-weight:700;'>24/7 Emergency</span>"
         if str(f.get("emergency", "")).lower() == "true" else ""
     )
     return (
         f"<div style='background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;"
-        f"padding:0.8rem 1rem;margin:0.4rem 0;'>"
-        f"<b>{f['name']}</b> {emergency_tag}<br>"
-        f"<span style='color:#64748b;font-size:0.9rem;'>{f['type']} · "
+        f"padding:0.8rem 1rem;margin:0.4rem 0;color:#000000;'>"
+        f"<b style='color:#000000;'>{f['name']}</b> {emergency_tag}<br>"
+        f"<span style='color:#000000;font-size:0.9rem;'>{f['type']} · "
         f"{f['distance_km']} km away</span><br>"
-        f"<span style='color:#0ea5e9;font-size:0.9rem;'>📞 {f.get('phone', 'N/A')}</span>"
+        f"<span style='color:#000000;font-size:0.9rem;'>📞 {f.get('phone', 'N/A')}</span>"
         f"</div>"
     )
 
@@ -109,23 +109,60 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-  .appview-container .main .block-container {max-width: 1200px; padding-top: 1.5rem;}
+  .appview-container .main .block-container {
+    max-width: 1200px;
+    padding-top: 1.5rem;
+  }
+
   .hero {
     background: linear-gradient(135deg, #ecfdf5 0%, #dbeafe 50%, #fef9c3 100%);
-    border-radius: 20px; padding: 1.5rem 2rem;
-    border: 1px solid rgba(0,0,0,0.06); margin-bottom: 1.2rem;
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    border: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 1.2rem;
   }
+
+  /* 🔥 MAKE ALL HERO TEXT BLACK */
+  .hero h1 {
+    color: #000000 !important;
+  }
+
+  .hero p {
+    color: #000000 !important;
+  }
+
+  .hero span {
+    color: #000000 !important;
+  }
+
+  /* 🔥 DISCLAIMER TEXT BLACK */
   .disclaimer-box {
-    background: #fff7ed; border-left: 5px solid #f97316;
-    padding: 0.9rem 1.2rem; border-radius: 10px; margin-bottom: 1rem;
+    background: #fff7ed;
+    border-left: 5px solid #f97316;
+    padding: 0.9rem 1.2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    color: #000000 !important;
+    font-weight: 500;
   }
+
   .response-card {
-    background: #ffffff; border-radius: 16px;
-    border: 1px solid #e2e8f0; padding: 1.2rem 1.4rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04); white-space: pre-wrap;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    white-space: pre-wrap;
   }
-  .section-label {font-size: 0.78rem; font-weight: 700; color: #94a3b8;
-    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem;}
+
+  .section-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #000000; /* also black */
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.3rem;
+  }
 </style>
 """, unsafe_allow_html=True)
 
@@ -268,7 +305,7 @@ if result:
                 st.markdown(render_facility_card(f), unsafe_allow_html=True)
 
         st.markdown("---")
-        st.markdown("<div class='section-label'>Voice Response</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-label'def>Voice Response</div>", unsafe_allow_html=True)
         if used_payload:
             with st.spinner("Generating audio response…"):
                 try:

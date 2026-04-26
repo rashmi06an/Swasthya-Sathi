@@ -1,0 +1,220 @@
+[
+  {
+    "id": "TC001",
+    "description": "Classic emergency - chest pain",
+    "input": {
+      "symptoms": "chest pain radiating to left arm, sweating, can't breathe",
+      "language": "en",
+      "location": "sehore",
+      "medications": []
+    },
+    "expected": {
+      "severity": "EMERGENCY",
+      "severity_color": "red",
+      "has_emergency_keywords": true
+    }
+  },
+  {
+    "id": "TC002",
+    "description": "Hindi emergency - breathing difficulty",
+    "input": {
+      "symptoms": "सांस नहीं आ रही, सीने में तेज दर्द",
+      "language": "hi",
+      "location": "bhopal",
+      "medications": []
+    },
+    "expected": {
+      "severity": "EMERGENCY",
+      "severity_color": "red",
+      "has_emergency_keywords": true
+    }
+  },
+  {
+    "id": "TC003",
+    "description": "High urgency - high fever for 3 days",
+    "input": {
+      "symptoms": "high fever for 3 days with dizziness and body aches",
+      "language": "en",
+      "location": "vidisha",
+      "medications": ["paracetamol"]
+    },
+    "expected": {
+      "severity": "HIGH",
+      "severity_color": "orange",
+      "has_emergency_keywords": false
+    }
+  },
+  {
+    "id": "TC004",
+    "description": "Hindi high urgency - fever and vomiting",
+    "input": {
+      "symptoms": "तेज बुखार, बार-बार उल्टी हो रही है, कमजोरी",
+      "language": "hi",
+      "location": "sehore",
+      "medications": ["paracetamol"]
+    },
+    "expected": {
+      "severity": "HIGH",
+      "severity_color": "orange",
+      "has_emergency_keywords": false
+    }
+  },
+  {
+    "id": "TC005",
+    "description": "Medium urgency - fever and cough",
+    "input": {
+      "symptoms": "fever and cough since yesterday, mild headache",
+      "language": "en",
+      "location": "raisen",
+      "medications": []
+    },
+    "expected": {
+      "severity": "MEDIUM",
+      "severity_color": "yellow",
+      "has_emergency_keywords": false
+    }
+  },
+  {
+    "id": "TC006",
+    "description": "Hindi medium - diarrhea",
+    "input": {
+      "symptoms": "दस्त लग रहे हैं, पेट में दर्द, थोड़ी कमजोरी",
+      "language": "hi",
+      "location": "ashta",
+      "medications": []
+    },
+    "expected": {
+      "severity": "MEDIUM",
+      "severity_color": "yellow",
+      "has_emergency_keywords": false
+    }
+  },
+  {
+    "id": "TC007",
+    "description": "Low urgency - mild cold",
+    "input": {
+      "symptoms": "mild cough, runny nose, no chest pain, no breathing trouble",
+      "language": "en",
+      "location": "sehore",
+      "medications": []
+    },
+    "expected": {
+      "severity": "LOW",
+      "severity_color": "green",
+      "has_emergency_keywords": false
+    }
+  },
+  {
+    "id": "TC008",
+    "description": "Drug interaction check - high risk",
+    "input": {
+      "symptoms": "mild headache",
+      "language": "en",
+      "location": "bhopal",
+      "medications": ["ibuprofen", "warfarin"]
+    },
+    "expected": {
+      "severity": "LOW",
+      "drug_overall_risk": "high",
+      "has_drug_warnings": true
+    }
+  },
+  {
+    "id": "TC009",
+    "description": "Drug interaction - medium risk (paracetamol + alcohol)",
+    "input": {
+      "symptoms": "headache",
+      "language": "en",
+      "location": "sehore",
+      "medications": ["paracetamol", "alcohol"]
+    },
+    "expected": {
+      "drug_overall_risk": "medium",
+      "has_drug_warnings": true
+    }
+  },
+  {
+    "id": "TC010",
+    "description": "Routing - Vidisha location",
+    "input": {
+      "symptoms": "mild cough",
+      "language": "en",
+      "location": "vidisha",
+      "medications": []
+    },
+    "expected": {
+      "has_facilities": true,
+      "resolved_location": "vidisha"
+    }
+  },
+  {
+    "id": "TC011",
+    "description": "Stroke symptoms - emergency",
+    "input": {
+      "symptoms": "slurred speech, cannot lift right arm, face drooping, sudden severe headache",
+      "language": "en",
+      "location": "bhopal",
+      "medications": []
+    },
+    "expected": {
+      "severity": "EMERGENCY",
+      "severity_color": "red"
+    }
+  },
+  {
+    "id": "TC012",
+    "description": "Pregnancy emergency",
+    "input": {
+      "symptoms": "pregnant and bleeding, severe abdominal pain",
+      "language": "en",
+      "location": "sehore",
+      "medications": []
+    },
+    "expected": {
+      "severity": "EMERGENCY",
+      "severity_color": "red"
+    }
+  },
+  {
+    "id": "TC013",
+    "description": "Hindi low urgency - runny nose",
+    "input": {
+      "symptoms": "हल्की खांसी, नाक बह रही है, सांस की दिक्कत नहीं",
+      "language": "hi",
+      "location": "sehore",
+      "medications": []
+    },
+    "expected": {
+      "severity": "LOW",
+      "severity_color": "green"
+    }
+  },
+  {
+    "id": "TC014",
+    "description": "Seizure - emergency",
+    "input": {
+      "symptoms": "seizure, convulsions, unconscious for 5 minutes",
+      "language": "en",
+      "location": "raisen",
+      "medications": []
+    },
+    "expected": {
+      "severity": "EMERGENCY",
+      "severity_color": "red"
+    }
+  },
+  {
+    "id": "TC015",
+    "description": "No medications provided",
+    "input": {
+      "symptoms": "mild fever and cold",
+      "language": "en",
+      "location": "sanchi",
+      "medications": []
+    },
+    "expected": {
+      "drug_overall_risk": "none",
+      "has_drug_warnings": false
+    }
+  }
+]

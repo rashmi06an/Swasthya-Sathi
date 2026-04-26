@@ -1,0 +1,31 @@
+name,type,lat,lon,address,phone,hours,beds,emergency
+Sehore District Hospital,District Hospital,23.2033,77.0850,"Civil Hospital Road, Sehore, MP 466001",07562-224100,24/7,200,true
+Ashoka PHC Sehore,Primary Health Centre,23.1980,77.0790,"Ashoka Nagar, Sehore, MP 466001",07562-225678,8am-8pm,20,false
+Bhopal AIIMS,Tertiary Hospital,23.1981,77.4562,"Saket Nagar, Bhopal, MP 462020",0755-2960000,24/7,896,true
+Hamidia Hospital Bhopal,Government Medical College,23.2512,77.4012,"Royal Market, Bhopal, MP 462001",0755-2730000,24/7,1700,true
+BMHRC Bhopal,Speciality Centre,23.2461,77.4280,"Karond, Bhopal, MP 462038",0755-2742212,24/7,350,true
+JP Hospital Bhopal,District Hospital,23.2344,77.4329,"New Market, Bhopal, MP 462003",0755-2555002,24/7,360,true
+Vidisha District Hospital,District Hospital,23.5251,77.8061,"Hospital Road, Vidisha, MP 464001",07592-250001,24/7,200,true
+Vidisha CHC,Community Health Centre,23.5180,77.7990,"Ganj Basoda Road, Vidisha",07592-251234,8am-10pm,50,false
+Raisen District Hospital,District Hospital,23.3303,77.7820,"Civil Lines, Raisen, MP 464551",07482-221001,24/7,150,true
+Raisen PHC Goharganj,Primary Health Centre,23.1523,77.7030,"Goharganj, Raisen, MP",07482-265010,8am-6pm,10,false
+Sanchi CHC,Community Health Centre,23.4865,77.7378,"Near Buddhist Monuments, Sanchi, MP 464661",07482-266701,8am-8pm,30,false
+Ashta CHC,Community Health Centre,23.0179,76.7206,"Bus Stand Road, Ashta, MP 466116",07564-222101,8am-10pm,40,false
+Budhni PHC,Primary Health Centre,22.9873,77.6099,"Budhni, Sehore District",07564-241100,8am-6pm,10,false
+Nasrullaganj PHC,Primary Health Centre,22.6927,76.7157,"Nasrullaganj, Sehore District",07562-280020,8am-6pm,10,false
+Ichhawar PHC,Primary Health Centre,23.0167,76.8803,"Ichhawar, Sehore District",07562-275010,8am-6pm,15,false
+Rehti CHC,Community Health Centre,22.9250,77.3167,"Rehti Town, Sehore District",07562-270050,8am-8pm,25,false
+Jawar PHC,Primary Health Centre,23.3133,77.0431,"Jawar Village, Sehore District",07562-290010,8am-6pm,10,false
+Bilkisganj PHC,Primary Health Centre,23.1400,77.2600,"Bilkisganj, Sehore District",07562-261010,8am-6pm,10,false
+Shyampur CHC,Community Health Centre,23.2700,77.2200,"Shyampur, Sehore District",07562-268010,8am-8pm,30,false
+Kolar Road Urban PHC,Primary Health Centre,23.1800,77.4000,"Kolar Road, Bhopal, MP",0755-2680010,8am-6pm,15,false
+Obaidullaganj PHC,Primary Health Centre,23.1167,77.6000,"Obaidullaganj, Raisen District",07482-270020,8am-6pm,10,false
+Gairatganj PHC,Primary Health Centre,23.5633,77.9367,"Gairatganj, Raisen District",07482-280010,8am-6pm,10,false
+Begumganj CHC,Community Health Centre,23.5983,77.9667,"Begumganj, Raisen District",07482-255050,8am-8pm,30,false
+Silwani PHC,Primary Health Centre,23.5500,78.1300,"Silwani, Raisen District",07482-261010,8am-6pm,10,false
+Gyaraspur PHC,Primary Health Centre,23.7867,78.0233,"Gyaraspur, Vidisha District",07592-280010,8am-6pm,10,false
+Basoda CHC,Community Health Centre,23.8533,77.9367,"Ganj Basoda, Vidisha District",07592-261050,8am-8pm,35,false
+Kurwai PHC,Primary Health Centre,24.0833,78.0500,"Kurwai, Vidisha District",07592-271010,8am-6pm,10,false
+Lateri PHC,Primary Health Centre,23.8367,78.3667,"Lateri, Vidisha District",07592-291010,8am-6pm,10,false
+Sironj CHC,Community Health Centre,24.1033,77.6917,"Sironj, Vidisha District",07592-245050,8am-8pm,30,false
+Mandideep Industrial Hospital,ESI Hospital,23.0767,77.5500,"Mandideep Industrial Area, Raisen",07482-231100,24/7,50,true
