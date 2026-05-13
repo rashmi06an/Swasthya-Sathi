@@ -9,6 +9,10 @@ pinned: false
 
 # Swasthya Sathi — Agentic Rural Health Assistant 🩺
 
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/Rashmi2608/swasthya-sathi)
+
+**Live Demo:** [https://huggingface.co/spaces/Rashmi2608/swasthya-sathi](https://huggingface.co/spaces/Rashmi2608/swasthya-sathi)
+
 **Medical Safety Disclaimer:** Swasthya Sathi is a triage **support tool only**. It does **not** diagnose disease and does **not** replace a qualified doctor. Always consult a licensed healthcare professional. If symptoms are severe or life-threatening, seek emergency care immediately.
 
 ---
@@ -36,7 +40,7 @@ Swasthya Sathi (स्वास्थ्य साथी — "Health Companion")
 - **Agents**: LangChain + LangGraph
 - **Frontend**: Streamlit
 - **Data**: FAISS (Vector DB), Sentence-Transformers
-- **Deployment**: Docker-ready for Hugging Face Spaces or Render
+- **Deployment**: Docker on **Hugging Face Spaces**
 
 ## How to Run Locally
 
