@@ -1,12 +1,3 @@
----
-title: Swasthya Sathi
-emoji: 🩺
-colorFrom: yellow
-colorTo: blue
-sdk: docker
-pinned: false
----
-
 # Swasthya Sathi — Agentic Rural Health Assistant 🩺
 
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/Rashmi2608/swasthya-sathi)
@@ -38,7 +29,7 @@ Swasthya Sathi (स्वास्थ्य साथी — "Health Companion")
 
 - **Backend**: FastAPI
 - **Agents**: LangChain + LangGraph
-- **Frontend**: Streamlit
+- **Frontend**: HuggingFace
 - **Data**: FAISS (Vector DB), Sentence-Transformers
 - **Deployment**: Docker on **Hugging Face Spaces**
 
