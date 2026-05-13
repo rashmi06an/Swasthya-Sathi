@@ -106,7 +106,7 @@ class TriageAgent:
             *[f"- {item['content']}" for item in evidence],
         ]
 
-        action_items = self._action_items(severity, language)
+        action_items = self._action_items(severity, language, normalized)
         return {
             "severity": severity,
             "action_items": action_items,
@@ -135,49 +135,20 @@ class TriageAgent:
             return "MEDIUM"
         return matched
 
-    def _action_items(self, severity: str, language: str) -> List[str]:
-        english = {
-            "LOW": [
-                "Monitor symptoms, stay hydrated, and rest.",
-                "If symptoms worsen or last beyond 24-48 hours, see a clinician.",
-            ],
-            "MEDIUM": [
-                "Arrange a doctor or clinic visit within 24 hours.",
-                "Watch for worsening fever, breathing issues, dehydration, or confusion.",
-            ],
-            "HIGH": [
-                "Seek urgent medical evaluation as soon as possible today.",
-                "Avoid self-medicating beyond basic supportive care unless a clinician advised it.",
-            ],
-            "EMERGENCY": [
-                "This needs emergency care right now.",
-                "Go to the nearest emergency facility or contact local emergency support immediately.",
-            ],
-        }
-        hindi = {
-            "LOW": [
-                "लक्षणों पर नजर रखें, आराम करें और पानी पीते रहें।",
-                "अगर 24-48 घंटे में सुधार न हो या हालत बिगड़े तो डॉक्टर से मिलें।",
-            ],
-            "MEDIUM": [
-                "24 घंटे के भीतर डॉक्टर या क्लिनिक में जांच कराएं।",
-                "अगर बुखार, सांस की दिक्कत, कमजोरी या उलझन बढ़े तो तुरंत मदद लें।",
-            ],
-            "HIGH": [
-                "आज ही जल्दी से जल्दी डॉक्टर द्वारा जांच कराएं।",
-                "डॉक्टर की सलाह के बिना अतिरिक्त दवा न लें।",
-            ],
-            "EMERGENCY": [
-                "यह आपातकालीन स्थिति हो सकती है।",
-                "तुरंत नजदीकी आपातकालीन केंद्र जाएं या स्थानीय आपात सहायता लें।",
-            ],
-        }
-        table = hindi if language == "hi" else english
-        return table[severity]
-                remedies.append("Apply cool water sponges to the forehead and body." if language == "en" else "माथे और शरीर पर ठंडे पानी की पट्टियां लगाएं।")
-            elif "cough" in sym_lower or "खांसी" in sym_lower or "throat" in sym_lower or "गला" in sym_lower:
-                remedies.append("Gargle with warm salt water." if language == "en" else "गुनगुने नमक के पानी से गरारे करें।")
-                remedies.append("Try honey with ginger juice." if language == "en" else "अदरक के रस के साथ शहद का सेवन करें।")
+    def _action_items(self, severity: str, language: str, symptoms: str) -> List[str]:
+        remedies = []
+        sym_lower = symptoms.lower()
+        
+        if severity in ["LOW", "MEDIUM"]:
+            if any(k in sym_lower for k in ["fever", "बुखार", "temperature", "तापमान"]):
+                remedies.append("🌡️ Apply cool water sponges to the forehead and body." if language == "en" else "🌡️ माथे और शरीर पर ठंडे पानी की पट्टियां लगाएं।")
+            if any(k in sym_lower for k in ["cough", "खांसी", "throat", "गला"]):
+                remedies.append("🍵 Gargle with warm salt water." if language == "en" else "🍵 गुनगुने नमक के पानी से गरारे करें।")
+                remedies.append("🍯 Try honey with ginger juice." if language == "en" else "🍯 अदरक के रस के साथ शहद का सेवन करें।")
+            if any(k in sym_lower for k in ["wound", "injury", "cut", "चोट", "घाव"]):
+                remedies.append("🩹 For minor wounds, applying turmeric paste (haldi) can act as an antiseptic." if language == "en" else "🩹 मामूली चोटों के लिए, हल्दी का लेप (Haldi) एंटीसेप्टिक का काम कर सकता है।")
+            if any(k in sym_lower for k in ["dehydration", "dizzy", "weakness", "कमजोरी", "चक्कर"]):
+                remedies.append("💧 Drink ORS or a homemade sugar-salt solution to stay hydrated." if language == "en" else "💧 हाइड्रेटेड रहने के लिए ओआरएस (ORS) या घर पर बना चीनी-नमक का घोल पिएं।")
 
         allergy_warning = [
             "⚠️ Keep your known allergies in mind before trying any home remedies or balms." if language == "en" else "⚠️ कोई भी घरेलू उपचार या बाम आज़माने से पहले अपनी ज्ञात एलर्जी का ध्यान रखें।"
@@ -230,3 +201,4 @@ class TriageAgent:
         }
         table = hindi if language == "hi" else english
         return table[severity]
+

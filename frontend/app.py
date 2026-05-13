@@ -30,12 +30,7 @@ DISCLAIMER = (
     "seek emergency care immediately. **Dial 108** for ambulance."
 )
 
-LOCATION_OPTIONS = [
-    "Sehore", "Ashta", "Nasrullaganj", "Ichhawar", "Rehti", "Budhni",
-    "Bhopal", "Mandideep",
-    "Vidisha", "Basoda", "Sironj",
-    "Raisen", "Sanchi", "Obaidullaganj", "Begumganj",
-]
+LOCATION_OPTIONS = ["Sehore", "Bhopal", "Indore"]
 
 SEVERITY_PALETTE = {
     "green":  {"bg": "#d1fae5", "border": "#10b981", "text": "#065f46"},
@@ -43,6 +38,84 @@ SEVERITY_PALETTE = {
     "orange": {"bg": "#ffedd5", "border": "#f97316", "text": "#7c2d12"},
     "red":    {"bg": "#fee2e2", "border": "#ef4444", "text": "#7f1d1d"},
 }
+
+# ─── Translations ─────────────────────────────────────────────────────────────
+TRANSLATIONS = {
+    "en": {
+        "title": "🩺 Swasthya Sathi",
+        "subtitle": "Agentic rural health assistant — safe triage · drug interaction check · nearest care routing",
+        "desc_symptoms": "#### 📝 Describe Symptoms",
+        "lang_label": "Language / भाषा",
+        "loc_label": "Nearest Location",
+        "med_label": "Current medicines (comma-separated)",
+        "med_placeholder": "e.g. paracetamol, metformin",
+        "symp_placeholder": "Example: High fever for 3 days, dizziness and body ache\nउदाहरण: 3 दिन से तेज बुखार, चक्कर और बदन दर्द",
+        "symp_label": "Symptoms",
+        "analyse_btn": "🔍 Analyse Symptoms",
+        "voice_input": "#### 🎤 Voice Input",
+        "voice_placeholder": "Speak your symptoms",
+        "voice_caption": "Speak in English or Hindi. Audio is transcribed using Whisper and a voice response is generated using gTTS.",
+        "emergency_title": "#### ℹ️ Emergency Numbers",
+        "ambulance": "🚑 **108** — Ambulance (national)",
+        "women": "👩 **181** — Women's helpline",
+        "child": "👶 **1098** — Child helpline",
+        "mental": "🧠 **iCall: 9152987821** — Mental health",
+        "assessment_title": "### 📋 Assessment Result",
+        "severity_label": "Severity",
+        "guidance_label": "Guidance",
+        "drug_warn_label": "Drug Interaction Warnings",
+        "overall_risk": "Overall risk",
+        "no_drug_warn": "✅ No drug interaction warnings found for provided medications.",
+        "nearest_health_label": "Nearest Healthcare",
+        "voice_res_label": "Voice Response",
+        "session_history": "### 📜 Session History",
+        "running_triage": "Running triage agents…",
+        "transcribing": "Transcribing audio and running triage agents…",
+        "generating_voice": "Generating audio response…",
+    },
+    "hi": {
+        "title": "🩺 स्वास्थ्य साथी",
+        "subtitle": "एजेंटिक ग्रामीण स्वास्थ्य सहायक — सुरक्षित ट्राइएज · दवा इंटरेक्शन जांच · निकटतम देखभाल रूटिंग",
+        "desc_symptoms": "#### 📝 लक्षणों का वर्णन करें",
+        "lang_label": "भाषा / Language",
+        "loc_label": "निकटतम स्थान",
+        "med_label": "वर्तमान दवाएं (अल्पविराम से अलग)",
+        "med_placeholder": "जैसे: पैरासिटामोल, मेटफोर्मिन",
+        "symp_placeholder": "उदाहरण: 3 दिन से तेज बुखार, चक्कर और बदन दर्द",
+        "symp_label": "लक्षण",
+        "analyse_btn": "🔍 लक्षणों का विश्लेषण करें",
+        "voice_input": "#### 🎤 वॉयस इनपुट",
+        "voice_placeholder": "अपने लक्षण बोलें",
+        "voice_caption": "अंग्रेजी या हिंदी में बोलें। व्हिस्पर का उपयोग करके ऑडियो ट्रांसक्राइब किया जाता है और gTTS का उपयोग करके वॉयस रिस्पॉन्स जनरेट किया जाता है।",
+        "emergency_title": "#### ℹ️ आपातकालीन नंबर",
+        "ambulance": "🚑 **108** — एम्बुलेंस (राष्ट्रीय)",
+        "women": "👩 **181** — महिला हेल्पलाइन",
+        "child": "👶 **1098** — चाइल्ड हेल्पलाइन",
+        "mental": "🧠 **iCall: 9152987821** — मानसिक स्वास्थ्य",
+        "assessment_title": "### 📋 मूल्यांकन परिणाम",
+        "severity_label": "गंभीरता",
+        "guidance_label": "मार्गदर्शन",
+        "drug_warn_label": "दवा इंटरेक्शन चेतावनी",
+        "overall_risk": "कुल जोखिम",
+        "no_drug_warn": "✅ प्रदान की गई दवाओं के लिए कोई दवा इंटरेक्शन चेतावनी नहीं मिली।",
+        "nearest_health_label": "निकटतम स्वास्थ्य सेवा",
+        "voice_res_label": "वॉयस रिस्पॉन्स",
+        "session_history": "### 📜 सत्र इतिहास",
+        "running_triage": "ट्राइएज एजेंट चल रहे हैं…",
+        "transcribing": "ऑडियो ट्रांसक्राइब करना और ट्राइएज एजेंट चलाना…",
+        "generating_voice": "ऑडियो रिस्पॉन्स जनरेट हो रहा है…",
+    }
+}
+
+import json
+def _get_locations() -> list[str]:
+    try:
+        with open("data/indian_districts.json", "r") as f:
+            return json.load(f)
+    except Exception:
+        return LOCATION_OPTIONS
+
+LOCATION_OPTIONS_ALL = _get_locations()
 
 # ─── API helpers ──────────────────────────────────────────────────────────────
 
@@ -158,7 +231,7 @@ st.markdown("""
   .section-label {
     font-size: 0.78rem;
     font-weight: 700;
-    color: #000000; /* also black */
+    color: #ffffff; /* Changed to white as requested */
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin-bottom: 0.3rem;
@@ -166,13 +239,25 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ─── Language Selection ───────────────────────────────────────────────────────
+# We need language selected before anything else to translate UI
+if "language" not in st.session_state:
+    st.session_state.language = "en"
+
+# Sidebar or Top-level language toggle
+language = st.selectbox("Language / भाषा", ["en", "hi"],
+                        index=0 if st.session_state.language == "en" else 1,
+                        format_func=lambda x: "🇬🇧 English" if x == "en" else "🇮🇳 हिन्दी",
+                        key="lang_selector")
+st.session_state.language = language
+
+T = TRANSLATIONS[language]
+
 # ─── Hero ─────────────────────────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <div class="hero">
-  <h1 style="margin:0 0 0.3rem 0;">🩺 Swasthya Sathi <span style="font-size:1rem;font-weight:400;color:#64748b;">स्वास्थ्य साथी</span></h1>
-  <p style="margin:0;color:#475569;">
-    Agentic rural health assistant — safe triage · drug interaction check · nearest care routing
-  </p>
+  <h1 style="margin:0 0 0.3rem 0;">{T['title']}</h1>
+  <p style="margin:0;color:#475569;">{T['subtitle']}</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -182,44 +267,36 @@ st.markdown(f"<div class='disclaimer-box'>{DISCLAIMER}</div>", unsafe_allow_html
 left_col, right_col = st.columns([1.3, 1], gap="large")
 
 with left_col:
-    st.markdown("#### 📝 Describe Symptoms")
-    lang_col, loc_col = st.columns(2)
-    with lang_col:
-        language = st.selectbox("Language / भाषा", ["en", "hi"],
-                                format_func=lambda x: "🇬🇧 English" if x == "en" else "🇮🇳 हिन्दी")
+    st.markdown(T["desc_symptoms"])
+    loc_col, _ = st.columns([2, 1])
     with loc_col:
-        location = st.selectbox("Nearest Location", LOCATION_OPTIONS)
+        location = st.selectbox(T["loc_label"], LOCATION_OPTIONS_ALL)
 
     medications = st.text_input(
-        "Current medicines (comma-separated)",
-        placeholder="e.g. paracetamol, metformin",
+        T["med_label"],
+        placeholder=T["med_placeholder"],
         value="",
     )
     symptoms = st.text_area(
-        "Symptoms",
-        placeholder=(
-            "Example: High fever for 3 days, dizziness and body ache\n"
-            "उदाहरण: 3 दिन से तेज बुखार, चक्कर और बदन दर्द"
-        ),
+        T["symp_label"],
+        placeholder=T["symp_placeholder"],
         height=180,
     )
-    submit_btn = st.button("🔍 Analyse Symptoms", type="primary", use_container_width=True)
+    submit_btn = st.button(T["analyse_btn"], type="primary", use_container_width=True)
 
 with right_col:
-    st.markdown("#### 🎤 Voice Input")
-    audio_value = st.audio_input("Speak your symptoms")
-    st.caption(
-        "Speak in English or Hindi. Audio is transcribed using Whisper and "
-        "a voice response is generated using gTTS."
-    )
+    st.markdown(T["voice_input"])
+    audio_value = st.audio_input(T["voice_placeholder"])
+    st.caption(T["voice_caption"])
     st.markdown("---")
-    st.markdown("#### ℹ️ Emergency Numbers")
-    st.markdown("""
-    - 🚑 **108** — Ambulance (national)
-    - 👩 **181** — Women's helpline
-    - 👶 **1098** — Child helpline
-    - 🧠 **iCall: 9152987821** — Mental health
+    st.markdown(T["emergency_title"])
+    st.markdown(f"""
+    - {T['ambulance']}
+    - {T['women']}
+    - {T['child']}
+    - {T['mental']}
     """)
+
 
 # ─── Processing ───────────────────────────────────────────────────────────────
 if "history" not in st.session_state:
@@ -235,14 +312,14 @@ if submit_btn and symptoms.strip():
         "medications": [m.strip() for m in medications.split(",") if m.strip()],
         "location": location,
     }
-    with st.spinner("Running triage agents…"):
+    with st.spinner(T["running_triage"]):
         try:
             result = call_assist(used_payload)
         except httpx.HTTPError as exc:
             st.error(f"Backend error: {exc}. Ensure FastAPI is running at {BACKEND_URL}")
 
 elif audio_value is not None:
-    with st.spinner("Transcribing audio and running triage agents…"):
+    with st.spinner(T["transcribing"]):
         try:
             result = call_audio(
                 audio_value.read(),
@@ -266,19 +343,19 @@ if result:
     severity = result.get("severity", "UNKNOWN")
 
     st.markdown("---")
-    st.markdown("### 📋 Assessment Result")
+    st.markdown(T["assessment_title"])
 
     res_left, res_right = st.columns([1, 1], gap="large")
 
     with res_left:
-        st.markdown("<div class='section-label'>Severity</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-label'>{T['severity_label']}</div>", unsafe_allow_html=True)
         st.markdown(severity_badge(severity, color), unsafe_allow_html=True)
 
         if result.get("transcript"):
             st.info(f"🎤 Transcribed: *{result['transcript']}*")
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("<div class='section-label'>Guidance</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-label'>{T['guidance_label']}</div>", unsafe_allow_html=True)
         triage = result.get("triage", {})
         for item in triage.get("action_items", []):
             st.markdown(f"• {item}")
@@ -286,28 +363,28 @@ if result:
         drug = result.get("drug", {})
         if drug.get("warnings"):
             st.markdown("---")
-            st.markdown("<div class='section-label'>Drug Interaction Warnings</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='section-label'>{T['drug_warn_label']}</div>", unsafe_allow_html=True)
             overall = drug.get("overall_risk", "none")
             risk_color = {"high": "🔴", "medium": "🟡", "none": "🟢"}.get(overall, "⚪")
-            st.markdown(f"{risk_color} Overall risk: **{overall.upper()}**")
+            st.markdown(f"{risk_color} {T['overall_risk']}: **{overall.upper()}**")
             for w in drug["warnings"][:3]:
                 st.warning(f"💊 {w.get('message', '')} *(Source: {w.get('source', '')})*")
         else:
             st.markdown("---")
-            st.success("✅ No drug interaction warnings found for provided medications.")
+            st.success(T["no_drug_warn"])
 
     with res_right:
         routing = result.get("routing", {})
         facilities = routing.get("facilities", [])
         if facilities:
-            st.markdown("<div class='section-label'>Nearest Healthcare</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='section-label'>{T['nearest_health_label']}</div>", unsafe_allow_html=True)
             for f in facilities:
                 st.markdown(render_facility_card(f), unsafe_allow_html=True)
 
         st.markdown("---")
-        st.markdown("<div class='section-label'def>Voice Response</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-label'>{T['voice_res_label']}</div>", unsafe_allow_html=True)
         if used_payload:
-            with st.spinner("Generating audio response…"):
+            with st.spinner(T["generating_voice"]):
                 try:
                     voice_bytes = call_tts(used_payload)
                     st.audio(BytesIO(voice_bytes).read(), format="audio/mp3")
@@ -320,7 +397,7 @@ if result:
 # ─── History ──────────────────────────────────────────────────────────────────
 if len(st.session_state.history) > 1:
     st.markdown("---")
-    st.markdown("### 📜 Session History")
+    st.markdown(T["session_history"])
     for idx, item in enumerate(st.session_state.history[1:6], start=1):
         color_key = item.get("severity_color", "green")
         p = SEVERITY_PALETTE.get(color_key, SEVERITY_PALETTE["green"])
