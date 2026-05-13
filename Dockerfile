@@ -1,65 +1,38 @@
-# ─────────────────────────────────────────────────────────────────────────────
-# Swasthya Sathi — Agentic Rural Health Assistant
-# Build:  docker build -t swasthya-sathi .
-# Run:    docker run -p 8000:8000 -p 8501:8501 swasthya-sathi
-# ─────────────────────────────────────────────────────────────────────────────
+# Use Python 3.11 slim as base image
 FROM python:3.11-slim
 
-# ── Build-time metadata ───────────────────────────────────────────────────────
-LABEL org.opencontainers.image.title="Swasthya Sathi"
-LABEL org.opencontainers.image.description="Agentic Rural Health Assistant"
-LABEL org.opencontainers.image.version="1.0.0"
-
-# ── Environment ───────────────────────────────────────────────────────────────
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    # HuggingFace model cache inside container (writable)
-    HF_HOME=/app/.cache/huggingface \
-    TRANSFORMERS_CACHE=/app/.cache/huggingface \
-    SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence_transformers \
-    # Streamlit server settings
-    STREAMLIT_SERVER_HEADLESS=true \
-    STREAMLIT_SERVER_FILE_WATCHER_TYPE=none \
-    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
-    # App defaults (can be overridden at runtime via --env or .env)
-    API_HOST=0.0.0.0 \
-    API_PORT=8000 \
-    STREAMLIT_PORT=8501 \
-    BACKEND_URL=http://localhost:8000
-
-WORKDIR /app
-
-# ── System dependencies ───────────────────────────────────────────────────────
-# ffmpeg: required by Whisper for audio decoding
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
-    gcc \
-    g++ \
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
     curl \
+    software-properties-common \
+    git \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# ── Python dependencies (cached layer) ───────────────────────────────────────
-COPY requirements.txt .
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+# Set working directory
+WORKDIR /app
 
-# ── Application code ──────────────────────────────────────────────────────────
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application
 COPY . .
 
-# ── Permissions ───────────────────────────────────────────────────────────────
-RUN chmod +x /app/start.sh \
-    && mkdir -p /app/.cache/huggingface /app/.cache/sentence_transformers
+# Create data directory if it doesn't exist
+RUN mkdir -p data
 
-# ── Ports ─────────────────────────────────────────────────────────────────────
-# 8000 → FastAPI backend
-# 8501 → Streamlit frontend
-EXPOSE 8000 8501
+# Expose ports for FastAPI (8000) and Streamlit (8501)
+EXPOSE 8000
+EXPOSE 8501
 
-# ── Health check ─────────────────────────────────────────────────────────────
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+# Make start script executable
+RUN chmod +x start.sh
 
-# ── Entrypoint ────────────────────────────────────────────────────────────────
-CMD ["/app/start.sh"]
+# Environment variables
+ENV PYTHONUNBUFFERED=1
+ENV BACKEND_URL=http://localhost:8000
+
+# Start the application using the startup script
+CMD ["./start.sh"]
