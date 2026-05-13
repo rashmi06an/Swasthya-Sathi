@@ -1,4 +1,4 @@
-# Use Python 3.11 slim as base image
+# Use Python 3.11 slim
 FROM python:3.11-slim
 
 # Install system dependencies
@@ -10,29 +10,27 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /app
+# Create a non-root user for Hugging Face
+RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+
+WORKDIR $HOME/app
 
 # Copy requirements and install
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY --chown=user requirements.txt .
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# Copy the rest of the application
-COPY . .
+# Copy everything
+COPY --chown=user . .
 
-# Create data directory if it doesn't exist
-RUN mkdir -p data
-
-# Expose ports for FastAPI (8000) and Streamlit (8501)
+# Expose ports
+EXPOSE 7860
 EXPOSE 8000
-EXPOSE 8501
 
-# Make start script executable
+# Ensure start script is executable
 RUN chmod +x start.sh
 
-# Environment variables
-ENV PYTHONUNBUFFERED=1
-ENV BACKEND_URL=http://localhost:8000
-
-# Start the application using the startup script
+# Start the application
 CMD ["./start.sh"]
