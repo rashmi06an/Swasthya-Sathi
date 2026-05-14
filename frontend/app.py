@@ -13,13 +13,21 @@ import streamlit as st
 # ─── Config ──────────────────────────────────────────────────────────────────
 def _get_backend_url() -> str:
     """Read BACKEND_URL from secrets (HF Spaces) or env var, with safe fallback."""
+    # 1. Try streamlit secrets (for HF Spaces, Streamlit Cloud)
     try:
         url = st.secrets.get("BACKEND_URL", None)
         if url:
-            return url
+            return url.strip().rstrip("/")
     except Exception:
         pass
-    return os.environ.get("BACKEND_URL", "http://localhost:8000")
+
+    # 2. Try environment variable
+    env_url = os.environ.get("BACKEND_URL", "").strip().rstrip("/")
+    if env_url:
+        return env_url
+
+    # 3. Default to localhost for single-container or local dev
+    return "http://localhost:8000"
 
 BACKEND_URL = _get_backend_url()
 
@@ -316,7 +324,12 @@ if submit_btn and symptoms.strip():
         try:
             result = call_assist(used_payload)
         except httpx.HTTPError as exc:
-            st.error(f"Backend error: {exc}. Ensure FastAPI is running at {BACKEND_URL}")
+            st.error(f"⚠️ **Backend Connection Error**")
+            st.warning(
+                f"The frontend could not reach the FastAPI backend at `{BACKEND_URL}`. "
+                "If this is a production deployment, ensure the `BACKEND_URL` environment variable "
+                "is set correctly. Error details: `{exc}`"
+            )
 
 elif audio_value is not None:
     with st.spinner(T["transcribing"]):
@@ -334,7 +347,12 @@ elif audio_value is not None:
                 "location": location,
             }
         except httpx.HTTPError as exc:
-            st.error(f"Backend error: {exc}. Ensure FastAPI is running at {BACKEND_URL}")
+            st.error(f"⚠️ **Backend Connection Error**")
+            st.warning(
+                f"The frontend could not reach the FastAPI backend at `{BACKEND_URL}`. "
+                "If this is a production deployment, ensure the `BACKEND_URL` environment variable "
+                "is set correctly. Error details: `{exc}`"
+            )
 
 # ─── Results display ──────────────────────────────────────────────────────────
 if result:
