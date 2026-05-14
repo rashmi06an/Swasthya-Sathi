@@ -15,11 +15,11 @@ from streamlit.errors import StreamlitSecretNotFoundError
 def _get_backend_url() -> str:
     env_value = os.getenv("BACKEND_URL")
     if env_value:
-        return env_value.rstrip("/")
+        return env_value.strip().rstrip("/")
     try:
         secret_value = st.secrets.get("BACKEND_URL")
         if secret_value:
-            return str(secret_value).rstrip("/")
+            return str(secret_value).strip().rstrip("/")
     except StreamlitSecretNotFoundError:
         pass
     return "http://127.0.0.1:8000"
