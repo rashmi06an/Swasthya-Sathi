@@ -13,7 +13,7 @@ echo "  FastAPI   -> http://localhost:${API_PORT}"
 echo "  Streamlit -> http://localhost:${STREAMLIT_PORT}"
 echo "=============================================="
 
-uvicorn api.main:app \
+python -m uvicorn api.main:app \
     --host "${API_HOST}" \
     --port "${API_PORT}" \
     --workers 1 \

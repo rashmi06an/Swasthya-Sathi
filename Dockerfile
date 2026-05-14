@@ -19,7 +19,7 @@ WORKDIR $HOME/app
 
 # Copy requirements and install
 COPY --chown=user requirements.txt .
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install --no-cache-dir --user --upgrade -r requirements.txt
 
 # Copy everything
 COPY --chown=user . .
