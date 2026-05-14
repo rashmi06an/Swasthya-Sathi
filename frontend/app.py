@@ -10,26 +10,18 @@ from io import BytesIO
 import httpx
 import streamlit as st
 
+# Direct imports for in-process execution (Streamlit Cloud friendly)
+from api.dependencies import get_graph
+from api.voice import transcribe_audio, synthesize_speech
+
 # ─── Config ──────────────────────────────────────────────────────────────────
-def _get_backend_url() -> str:
-    """Read BACKEND_URL from secrets (HF Spaces) or env var, with safe fallback."""
-    # 1. Try streamlit secrets (for HF Spaces, Streamlit Cloud)
-    try:
-        url = st.secrets.get("BACKEND_URL", None)
-        if url:
-            return url.strip().rstrip("/")
-    except Exception:
-        pass
+# ─── Config & Setup ───────────────────────────────────────────────────────────
+# We use the cached graph from dependencies to avoid re-loading models
+@st.cache_resource
+def _load_system():
+    return get_graph()
 
-    # 2. Try environment variable
-    env_url = os.environ.get("BACKEND_URL", "").strip().rstrip("/")
-    if env_url:
-        return env_url
-
-    # 3. Default to localhost for single-container or local dev
-    return "http://localhost:8000"
-
-BACKEND_URL = _get_backend_url()
+SYSTEM_GRAPH = _load_system()
 
 DISCLAIMER = (
     "⚠️ Swasthya Sathi is a triage support tool only. It does **not** diagnose "
@@ -127,29 +119,39 @@ LOCATION_OPTIONS_ALL = _get_locations()
 
 # ─── API helpers ──────────────────────────────────────────────────────────────
 
+# ─── Internal Logic (Direct Calls) ───────────────────────────────────────────
+
 def call_assist(payload: dict) -> dict:
-    with httpx.Client(timeout=90.0) as client:
-        r = client.post(f"{BACKEND_URL}/api/v1/assist", json=payload)
-        r.raise_for_status()
-        return r.json()
+    """Invokes the LangGraph orchestrator directly."""
+    return SYSTEM_GRAPH.invoke(
+        symptoms=payload["symptoms"],
+        language=payload["language"],
+        location=payload["location"],
+        medications=payload["medications"],
+    )
 
 
 def call_audio(audio_bytes: bytes, language: str, location: str, medications: str) -> dict:
-    with httpx.Client(timeout=180.0) as client:
-        r = client.post(
-            f"{BACKEND_URL}/api/v1/assist/audio",
-            data={"language": language, "location": location, "medications": medications},
-            files={"audio": ("symptoms.wav", audio_bytes, "audio/wav")},
-        )
-        r.raise_for_status()
-        return r.json()
+    """Transcribes and then invokes the graph."""
+    transcript = transcribe_audio(audio_bytes)
+    med_list = [item.strip() for item in medications.split(",") if item.strip()]
+    response = SYSTEM_GRAPH.invoke(
+        symptoms=transcript,
+        language=language,
+        location=location,
+        medications=med_list,
+    )
+    response["transcript"] = transcript
+    return response
 
 
 def call_tts(payload: dict) -> bytes:
-    with httpx.Client(timeout=120.0) as client:
-        r = client.post(f"{BACKEND_URL}/api/v1/voice", json=payload)
-        r.raise_for_status()
-        return r.content
+    """Generates speech bytes directly."""
+    msg = payload.get("message")
+    if not msg:
+        res = call_assist(payload)
+        msg = res["message"]
+    return synthesize_speech(msg, payload["language"])
 
 # ─── UI helpers ───────────────────────────────────────────────────────────────
 
@@ -319,17 +321,14 @@ if submit_btn and symptoms.strip():
         "language": language,
         "medications": [m.strip() for m in medications.split(",") if m.strip()],
         "location": location,
+        "message": None, # Will be filled after result
     }
     with st.spinner(T["running_triage"]):
         try:
             result = call_assist(used_payload)
-        except httpx.HTTPError as exc:
-            st.error(f"⚠️ **Backend Connection Error**")
-            st.warning(
-                f"The frontend could not reach the FastAPI backend at `{BACKEND_URL}`. "
-                "If this is a production deployment, ensure the `BACKEND_URL` environment variable "
-                "is set correctly. Error details: `{exc}`"
-            )
+        except Exception as exc:
+            st.error(f"⚠️ **Processing Error**")
+            st.warning(f"An error occurred while processing your request: `{exc}`")
 
 elif audio_value is not None:
     with st.spinner(T["transcribing"]):
@@ -345,17 +344,17 @@ elif audio_value is not None:
                 "language": language,
                 "medications": [m.strip() for m in medications.split(",") if m.strip()],
                 "location": location,
+                "message": result.get("message"), # Pass the message for TTS
             }
-        except httpx.HTTPError as exc:
-            st.error(f"⚠️ **Backend Connection Error**")
-            st.warning(
-                f"The frontend could not reach the FastAPI backend at `{BACKEND_URL}`. "
-                "If this is a production deployment, ensure the `BACKEND_URL` environment variable "
-                "is set correctly. Error details: `{exc}`"
-            )
+        except Exception as exc:
+            st.error(f"⚠️ **Audio Processing Error**")
+            st.warning(f"An error occurred while processing audio: `{exc}`")
 
 # ─── Results display ──────────────────────────────────────────────────────────
 if result:
+    if used_payload and not used_payload.get("message"):
+        used_payload["message"] = result.get("message")
+    
     st.session_state.history.insert(0, result)
     color = result.get("severity_color", "green")
     severity = result.get("severity", "UNKNOWN")

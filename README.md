@@ -1,13 +1,3 @@
----
-title: Swasthya Sathi
-emoji: 🩺
-colorFrom: blue
-colorTo: green
-sdk: docker
-app_port: 7860
-pinned: false
----
-
 # Swasthya Sathi — Agentic Rural Health Assistant 🩺
 
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/Rashmi2608/swasthya-sathi)
