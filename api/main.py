@@ -11,6 +11,8 @@ from api.models import AssistRequest, AssistResponse
 from api.voice import synthesize_speech, transcribe_audio
 
 settings = get_settings()
+cors_origins = [origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()]
+allow_all_origins = "*" in cors_origins
 
 app = FastAPI(
     title=settings.app_name,
@@ -23,8 +25,8 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=["*"] if allow_all_origins else cors_origins,
+    allow_credentials=not allow_all_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -88,6 +90,6 @@ async def generic_exception_handler(_, exc: Exception) -> JSONResponse:
         status_code=500,
         content={
             "detail": "A safe fallback was triggered. Please consult a doctor or nearby clinic.",
-            "error": str(exc),
+            "error": "internal_server_error",
         },
     )

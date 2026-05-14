@@ -9,19 +9,34 @@ from io import BytesIO
 
 import httpx
 import streamlit as st
-
-# Direct imports for in-process execution (Streamlit Cloud friendly)
-from api.dependencies import get_graph
-from api.voice import transcribe_audio, synthesize_speech
+from streamlit.errors import StreamlitSecretNotFoundError
 
 # ─── Config ──────────────────────────────────────────────────────────────────
-# ─── Config & Setup ───────────────────────────────────────────────────────────
-# We use the cached graph from dependencies to avoid re-loading models
-@st.cache_resource
-def _load_system():
-    return get_graph()
+def _get_backend_url() -> str:
+    env_value = os.getenv("BACKEND_URL")
+    if env_value:
+        return env_value.rstrip("/")
+    try:
+        secret_value = st.secrets.get("BACKEND_URL")
+        if secret_value:
+            return str(secret_value).rstrip("/")
+    except StreamlitSecretNotFoundError:
+        pass
+    return "http://127.0.0.1:8000"
 
-SYSTEM_GRAPH = _load_system()
+
+BACKEND_URL = _get_backend_url()
+
+
+@st.cache_data(ttl=60)
+def check_backend_health(base_url: str) -> tuple[bool, str]:
+    try:
+        with httpx.Client(timeout=8.0) as client:
+            response = client.get(f"{base_url}/health")
+            response.raise_for_status()
+        return True, ""
+    except Exception as exc:  # noqa: BLE001
+        return False, str(exc)
 
 DISCLAIMER = (
     "⚠️ Swasthya Sathi is a triage support tool only. It does **not** diagnose "
@@ -119,39 +134,33 @@ LOCATION_OPTIONS_ALL = _get_locations()
 
 # ─── API helpers ──────────────────────────────────────────────────────────────
 
-# ─── Internal Logic (Direct Calls) ───────────────────────────────────────────
+# ─── API Logic (HTTP Calls) ───────────────────────────────────────────────────
 
 def call_assist(payload: dict) -> dict:
-    """Invokes the LangGraph orchestrator directly."""
-    return SYSTEM_GRAPH.invoke(
-        symptoms=payload["symptoms"],
-        language=payload["language"],
-        location=payload["location"],
-        medications=payload["medications"],
-    )
+    with httpx.Client(timeout=120.0) as client:
+        response = client.post(f"{BACKEND_URL}/api/v1/assist", json=payload)
+        response.raise_for_status()
+        return response.json()
 
 
 def call_audio(audio_bytes: bytes, language: str, location: str, medications: str) -> dict:
-    """Transcribes and then invokes the graph."""
-    transcript = transcribe_audio(audio_bytes)
-    med_list = [item.strip() for item in medications.split(",") if item.strip()]
-    response = SYSTEM_GRAPH.invoke(
-        symptoms=transcript,
-        language=language,
-        location=location,
-        medications=med_list,
-    )
-    response["transcript"] = transcript
-    return response
+    files = {"audio": ("recording.wav", audio_bytes, "audio/wav")}
+    data = {
+        "language": language,
+        "location": location,
+        "medications": medications,
+    }
+    with httpx.Client(timeout=240.0) as client:
+        response = client.post(f"{BACKEND_URL}/api/v1/assist/audio", files=files, data=data)
+        response.raise_for_status()
+        return response.json()
 
 
 def call_tts(payload: dict) -> bytes:
-    """Generates speech bytes directly."""
-    msg = payload.get("message")
-    if not msg:
-        res = call_assist(payload)
-        msg = res["message"]
-    return synthesize_speech(msg, payload["language"])
+    with httpx.Client(timeout=180.0) as client:
+        response = client.post(f"{BACKEND_URL}/api/v1/voice", json=payload)
+        response.raise_for_status()
+        return response.content
 
 # ─── UI helpers ───────────────────────────────────────────────────────────────
 
@@ -272,6 +281,12 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 st.markdown(f"<div class='disclaimer-box'>{DISCLAIMER}</div>", unsafe_allow_html=True)
+backend_ok, backend_error = check_backend_health(BACKEND_URL)
+if not backend_ok:
+    st.warning(
+        f"Backend is unreachable at `{BACKEND_URL}`. Set `BACKEND_URL` to your hosted FastAPI endpoint. "
+        f"Error: `{backend_error}`"
+    )
 
 # ─── Inputs ───────────────────────────────────────────────────────────────────
 left_col, right_col = st.columns([1.3, 1], gap="large")

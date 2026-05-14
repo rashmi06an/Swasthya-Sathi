@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     openfda_base_url: str = "https://api.fda.gov/drug/label.json"
     backend_url: str = "http://localhost:8000"
+    cors_origins: str = "*"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
